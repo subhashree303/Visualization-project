@@ -1,0 +1,153 @@
+---
+title: "Life expectancy by WHO"
+author: "Subhashree Saha"
+date: "2022-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+
+data=read.csv("D://cmi//sem1//visualization project//Life Expectancy Data.csv")
+head(data)
+```
+The term “life expectancy” refers to the number of years a person can expect to live. By definition, life expectancy is based on an estimate of the average age that members of a particular population group will be when they die.\
+\
+<b>Data Description</b>\
+The data-set related to life expectancy, health factors for 193 countries has been collected from the  WHO data repository website and its corresponding economic data was collected from United Nation website. Among all categories of health-related factors only those critical factors were chosen which are more representative. It has been observed that in the past 15 years , there has been a huge development in health sector resulting in improvement of human mortality rates especially in the developing nations in comparison to the past 30 years. Therefore, in this project we have considered data from year 2000-2015 for 193 countries for further analysis.
+The final dataset consists of 22 Columns and 2938 rows which meant 20 predicting variables. All predicting variables was then divided into several broad categories:Immunization related factors, Mortality factors, Economical factors and Social factors.
+
+Some predicting variables are:\
+Mortality factors:\
+
+<b>Adult Mortality Rates of both sexes</b> -probability of dying between 15 and 60 years per 1000 population\
+<b>Infant deaths</b>-Number of Infant Deaths per 1000 population\
+<b>Measles</b> - number of reported cases per 1000 population\
+<b>under-five deaths</b>- Number of under-five deaths per 1000 population\
+<b>HIV/AIDS</b>- Deaths per 1000 live births HIV/AIDS (0-4 years)\
+
+Social factors-
+
+<b>Alcohol</b>-Alcohol consumption recorded per capita (15+)  (in litres of pure alcohol)\
+<b>Schooling</b>-Number of years of Schooling(years)\
+
+Economical factors-
+
+<b>Percentage expenditure</b>-Expenditure on health as a percentage of Gross Domestic Product per capita(%)\
+<b>Total expenditure</b>-General government expenditure on health as a percentage of total government expenditure (%)\
+<b>GDP</b>- Gross Domestic Product per capita (in USD)\
+<b>Income composition of resources</b>- Human Development Index in terms of income composition of resources (index ranging from 0 to 1)\
+
+Immunization related factors-
+
+<b>Hepatitis B</b> -Hepatitis B (HepB) immunization coverage among 1-year-olds (%)\
+<b>Polio</b>- Polio (Pol3) immunization coverage among 1-year-olds (%)\
+<b>Diphtheria</b> -Diphtheria tetanus toxoid and pertussis (DTP3) immunization coverage among 1-year-olds (%)\
+The data used in this study is taken from kaggle.The link to the original data is: 
+<a href="https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who">https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who</a>
+\
+\
+
+
+<p><b>Objective:</b>\
+The dataset aims to make an attempt to observe the life expectancy among various countries over the years 2000-2015.In this study,we shall further aim to observe the relationship of life expectancy with several social,economical and health factors of various countries.</p>\
+
+<p>R shiny dashboard link:
+<a href="https://subhashree303.shinyapps.io/Visualizationproject/">https://subhashree303.shinyapps.io/Visualizationproject/></a></p>
+<p> Dashboard presentation link on Youtube:</a>
+<a href="https://youtu.be/gwZTQSQERv8">https://youtu.be/gwZTQSQERv8</a>
+</p>
+\
+
+```{r , echo=FALSE}
+library(ggplot2)
+library(gridExtra)
+library(dplyr)
+
+ggplot(subset(data, !is.na(Life.expectancy)),aes(x=Life.expectancy))+geom_histogram(color="black",fill="light green",binwidth=2)+ggtitle("Distribution of life expectancy according to age")
+```
+<br /> We can interpret this graph as the life expectancy is high between the age of 70 to 75 all over the world<br />\
+```{r , echo=FALSE}
+
+ggplot(subset(data, !is.na(Life.expectancy)) ,aes(x= Status,y=Life.expectancy, fill= Status)) + 
+        geom_boxplot() +
+        ggtitle("Life expectancy per country Status")+
+        theme(text = element_text(size = 11))+
+        scale_fill_brewer(palette="Set1")
+
+
+```
+<br /> Above graph tells us that:
+Developing countries have low life expectancy and the developed countries have high life expectancy all over the world.<br />\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+<b>Relationship of life expectancy with some social factors</b>\
+
+ a)<b> Alcohol consumption</b>
+ 
+ ```{r , echo=FALSE,out.width="100%"}
+  ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Alcohol)),aes(Alcohol,Life.expectancy),na.rm=TRUE)+geom_point(color='red')+geom_smooth(method=lm)+ggtitle("Alcohol consumption vs Life expectancy ")
+  
+a=ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Alcohol)&Status=="Developed"),aes(Alcohol,Life.expectancy),na.rm=TRUE)+geom_point(color='dark green')+geom_smooth(method=lm)+ggtitle("In developed countries")
+ 
+b=ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Alcohol)&Status=="Developing"),aes(Alcohol,Life.expectancy),na.rm=TRUE)+geom_point(color='orange')+geom_smooth(method=lm)+ggtitle(" In developing countries")
+
+grid.arrange(a,b,ncol=2,nrow=1)
+ 
+ ```
+<p>The graph plot shows a positive correlation  between alcohol and life expectancy, but when we divide the data into developed an developing countries, we see a different scenario.
+
+Apparently alcohol has an ambiguous relationship with life expectancy in developed and developing countries, but this relationship is weak.We can observe that the relationship is positive in developing and negative in developed countries. This shows a weak relationship. So it's difficult to assume that this variable affects life expectancy.</p>
+\
+\
+
+ <b>b)Schooling</b>
+ \
+ \
+ \
+ ```{r , echo=FALSE,out.width="100%"}
+ ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Schooling)),aes(Schooling,Life.expectancy),na.rm=TRUE)+geom_point(color='red')+geom_smooth(method=lm)+ggtitle("Life expectancy  vs number of years of Schooling ")
+
+p=ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Schooling)&Status=="Developed"),aes(Schooling,Life.expectancy),na.rm=TRUE)+geom_point(color='dark green')+geom_smooth(method=lm)+ggtitle(" In developed countries")
+ 
+q=ggplot(subset(data, !is.na(Life.expectancy)&!is.na(Schooling)&Status=="Developing"),aes(Schooling,Life.expectancy),na.rm=TRUE)+geom_point(color='orange')+geom_smooth(method=lm)+ggtitle(" In developing countries")
+ ```
+ \
+ \
+ \
+ \
+ ```{r , echo=FALSE,out.width="100%"}
+grid.arrange(p,q,ncol=2,nrow=1)
+
+ ```
+<p>From the graph it is observed that the life expectancy has a strong positive relationship with the number of years of schooling in both developed and developing countries.</p>\
+\
+\
+\
+
+
+
+
+ ```{r , echo=FALSE, out.width="100%"}
+ 
+ subset(data, !is.na(Life.expectancy)&Year=="2015"&Status=="Developed")%>%head(10)%>%ggplot(aes(Country, Life.expectancy))+ geom_bar(stat="identity",color="black",fill="light blue")+ggtitle("Bar graph of life expectancies of first 10 developed countries")
+ 
+#time series plot
+
+ggplot(subset(data, !is.na(Life.expectancy)&Country=="Australia"),aes(Year,Life.expectancy),na.rm=TRUE)+geom_line(color='orange')+ggtitle("Time series plot of life expectancy of Australia (2000-2015)")
+
+```
+
+ 
+ 
+ 
+ 
+ 
